@@ -1,0 +1,7 @@
+---
+
+- import_playbook: common.yaml
+- import_playbook: seed.yaml
+- import_playbook: node.yaml
+
+

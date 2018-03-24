@@ -1,0 +1,19 @@
+---
+# set listen_address: in the cassandra.yaml file to the seed internal ip, just in the seed server
+- lineinfile:
+    path: /etc/cassandra/conf/cassandra.yaml
+    regexp: 'listen_address: '
+    line: "listen_address: {{hostvars['cseed01']['ansible_ssh_host']}}"
+                   
+# set rpc_address: in the cassandra.yaml file, to the seed internal ip, just in the seed server
+- lineinfile:
+    path: /etc/cassandra/conf/cassandra.yaml
+    regexp: 'rpc_address: '
+    line: "rpc_address: {{hostvars['cseed01']['ansible_ssh_host']}}"
+                                              
+- name: start cassandra
+  service: name=cassandra state=started
+
+- name: make cassandra service start at boot time
+  systemd: name=cassandra enabled=true
+ 

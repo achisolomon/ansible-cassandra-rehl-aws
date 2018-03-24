@@ -1,0 +1,12 @@
+---
+
+- lineinfile:
+    path: /etc/cassandra/conf/cassandra.yaml
+    regexp: 'listen_address: '
+    line: "listen_address: {{ ansible_eth0.ipv4.address }}"
+
+- name: start cassandra
+  service: name=cassandra state=started
+
+- name: make cassandra service start at boot time
+  systemd: name=cassandra enabled=true
