@@ -31,10 +31,56 @@
 
   - name: force systemd to reread configs (2.4 and above)
     systemd: daemon_reload=yes
+ 
+  # set the seed in the cassandra.yaml file, before starting the service, for all servers in the cassandra cluster
+  - lineinfile:
+      path: /etc/cassandra/conf/cassandra.yaml
+      regexp: '- seeds:'
+      line: "          - seeds: {{hostvars['cseed01']['ansible_ssh_host']}}"
+ 
+  # set endpoint_snitch: Ec2Snitch , for all servers in the cassandra cluster
+  - lineinfile:
+      path: /etc/cassandra/conf/cassandra.yaml
+      regexp: 'endpoint_snitch:'
+      line: "endpoint_snitch: Ec2Snitch"
+  
+  
+- hosts: cass-seed  
+  become: yes
+  tasks:
+  # set listen_address: in the cassandra.yaml file to the seed internal ip, just in the seed server
+  - lineinfile:
+      path: /etc/cassandra/conf/cassandra.yaml
+      regexp: 'listen_address: '
+      line: "listen_address: {{hostvars['cseed01']['ansible_ssh_host']}}"
+ 
+  # set rpc_address: in the cassandra.yaml file, to the seed internal ip, just in the seed server
+  - lineinfile:
+      path: /etc/cassandra/conf/cassandra.yaml
+      regexp: 'rpc_address: '
+      line: "rpc_address: {{hostvars['cseed01']['ansible_ssh_host']}}"
+ 
+  - name: start cassandra
+    service: name=cassandra state=started
+
+  - name: make cassandra service start at boot time
+    systemd: name=cassandra enabled=true
+
+
+- hosts: cass-nodes
+  become: yes
+  tasks:
+
+  #set listen_address to node in the cassandra.yaml file to the node internal ip 
+  - lineinfile:
+      path: /etc/cassandra/conf/cassandra.yaml
+      regexp: 'listen_address: '
+      line: "listen_address: {{ ansible_eth0.ipv4.address }}"
 
   - name: start cassandra
     service: name=cassandra state=started
 
   - name: make cassandra service start at boot time
     systemd: name=cassandra enabled=true
+
 
