@@ -1,4 +1,4 @@
-cass01 ansible_ssh_host=ec2-54-229-187-210.eu-west-1.compute.amazonaws.com
+cass01 ansible_ssh_host=ec2-34-245-115-250.eu-west-1.compute.amazonaws.com
 
 [cass-servers]
 cass01

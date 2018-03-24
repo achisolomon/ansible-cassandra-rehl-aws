@@ -34,3 +34,7 @@
 
   - name: start cassandra
     service: name=cassandra state=started
+
+  - name: make cassandra service start at boot time
+    systemd: name=cassandra enabled=true
+
