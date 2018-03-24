@@ -1,0 +1,36 @@
+- hosts: cass-servers
+  become: yes
+
+  vars:
+    java_version: 8u161
+    download_url: "http://download.oracle.com/otn-pub/java/jdk/8u161-b12/2f38c3b165be4555a1fa6e98c45e0808/jdk-{{java_version}}-linux-x64.tar.gz"
+    download_folder: /opt
+    java_name: "{{download_folder}}/jdk{{java_version}}"
+    java_archive: "{{download_folder}}/jdk-{{java_version}}-linux-x64.tar.gz"
+
+  tasks:
+  - name: ping - lets see we are ok
+    ping:
+
+  - name: verify java is installed
+    yum: name=java-1.8.0-openjdk state=present
+  
+  - name: verify python is installed 
+    yum: name=python state=present
+
+  - name: Add Cassandra repository
+    yum_repository:
+      name: cassandra
+      description: DataStax Repo for Apache Cassandra
+      baseurl: http://rpm.datastax.com/community
+      enabled: 1
+      gpgcheck: 0
+
+  - name: verify Cassandra is installed
+    yum: name=dsc20 state=present
+
+  - name: force systemd to reread configs (2.4 and above)
+    systemd: daemon_reload=yes
+
+  - name: start cassandra
+    service: name=cassandra state=started
