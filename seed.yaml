@@ -3,5 +3,5 @@
 - hosts: cass-seed
   become: yes
   roles: 
-    - common 
+    - seed 
 

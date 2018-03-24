@@ -1,4 +1,7 @@
 ---
+- name: make sure cassandra is stopped before setting listen_address & rpc_address values in cassandra.yaml on the seed
+  service: name=cassandra state=stopped
+
 # set listen_address: in the cassandra.yaml file to the seed internal ip, just in the seed server
 - lineinfile:
     path: /etc/cassandra/conf/cassandra.yaml

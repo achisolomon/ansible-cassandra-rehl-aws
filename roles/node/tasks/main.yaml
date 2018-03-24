@@ -1,4 +1,6 @@
 ---
+- name: stop cassandra before changing values in cassandra.yaml
+  service: name=cassandra state=stopped
 
 - lineinfile:
     path: /etc/cassandra/conf/cassandra.yaml
